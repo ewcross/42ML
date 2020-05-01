@@ -6,7 +6,7 @@
 #    By: ecross <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/04/30 17:29:40 by ecross            #+#    #+#              #
-#    Updated: 2020/05/01 19:57:18 by ecross           ###   ########.fr        #
+#    Updated: 2020/05/01 17:34:11 by ecross           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,14 +16,11 @@ from tools import add_intercept
 
 def predict_(x, theta):
     """computes the vector of prediction y_hat
-    from two non-empty numpy.ndarray using h(x) = th0 + th1(x),
-    returning a 1d vector containing all y_hat values"""
+    from two non-empty numpy.ndarray using h(x) = th0 + th1(x)."""
 
-    #adds column of 1s to right side of x value vector
-    x = add_intercept(x)
-    #number of theta values must match number of features (n in xn)
-    if theta.shape != (x.shape[1],):
+    if theta.shape != (2,):
         return None
+    x = add_intercept(x)
     return np.dot(x, theta)
 
 if __name__ == "__main__":

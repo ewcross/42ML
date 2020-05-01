@@ -6,7 +6,7 @@
 #    By: ecross <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/04/30 18:08:07 by ecross            #+#    #+#              #
-#    Updated: 2020/05/01 18:26:07 by ecross           ###   ########.fr        #
+#    Updated: 2020/04/30 18:19:48 by ecross           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,7 +18,7 @@ def add_intercept(x):
     containing the original vector"""
 
     #return np.array([np.ones(x.size), x]).transpose()
-    if x.ndim == 1:
+    if len(x.shape) == 1:
         x = x[:, None]
     return np.insert(x, 0, 1, axis=1)
 
