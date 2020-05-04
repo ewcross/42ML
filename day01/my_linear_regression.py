@@ -6,7 +6,7 @@
 #    By: ecross <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/05/04 11:38:14 by ecross            #+#    #+#              #
-#    Updated: 2020/05/04 20:54:57 by ecross           ###   ########.fr        #
+#    Updated: 2020/05/04 21:40:07 by ecross           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -124,24 +124,24 @@ class MyLinearRegression:
             x = x[:, None]
         return np.insert(x, 0, 1, axis=1)
 
-    def cost_elem_(y, y_hat):
+    def mse_elem_(y, y_hat):
 
         """generates the value of the cost function for for each element of
         a set of predicted and actual values, y_hat and y,
-        using half mean squared error"""
+        using mean squared error"""
 
         check, y, y_hat = self.check_size_and_shape(y, y_hat)
         if not check:
             return None
-        return (y_hat - y) / (2 * y.size)
+        return (y_hat - y) / y.size
 
-    def cost_(self, y, y_hat):
+    def mse_(self, y, y_hat):
 
         """generates the value of the cost function for a set of predicted
-        and actual values, y_hat and y, using half mean squared error"""
+        and actual values, y_hat and y, using mean squared error"""
 
         check, y, y_hat = self.check_size_and_shape(y, y_hat)
         if not check:
             return None
         y = y_hat - y
-        return np.dot(y, y) / (2 * y.size)
+        return np.dot(y, y) / y.size
