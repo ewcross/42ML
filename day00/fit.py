@@ -6,14 +6,18 @@
 #    By: ecross <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/05/01 20:22:40 by ecross            #+#    #+#              #
-#    Updated: 2020/05/01 21:42:29 by ecross           ###   ########.fr        #
+#    Updated: 2020/05/04 20:54:53 by ecross           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.datasets import make_regression
 
 from vec_gradient import gradient
 from plot import plot
+from cost import half_mse_
+from prediction import predict_
 
 def check(x, y, theta, alpha, max_iter):
     if (type(x) != np.ndarray or type(y) != np.ndarray or 
@@ -40,9 +44,11 @@ def fit_(x, y, theta, alpha, max_iter):
 
 if __name__ == "__main__":
 
-    x = np.array([[12.4956442], [21.5007972], [31.5527382], [48.9145838], [57.5088733]])
-    y = np.array([[37.4013816], [36.1473236], [45.7655287], [46.6793434], [59.5585554]])
-    theta= np.array([1, 1])
-    theta1 = fit_(x, y, theta, alpha=5e-8, max_iter = 150000)
+    x, y = make_regression(n_samples=10, n_features=1, noise=10)
+    theta = np.array([1, 1])
+    plt.plot(x, y, 'o')
+   
+    theta1 = fit_(x, y, theta, 0.1, 100)
     print(theta1)
-    plot(x, y, theta1)
+    plt.plot(x, (theta1[1] * x + theta1[0]), '-r')
+    plt.show()

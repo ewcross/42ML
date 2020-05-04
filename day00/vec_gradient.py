@@ -6,7 +6,7 @@
 #    By: ecross <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/05/01 19:53:44 by ecross            #+#    #+#              #
-#    Updated: 2020/05/01 21:32:35 by ecross           ###   ########.fr        #
+#    Updated: 2020/05/04 20:47:39 by ecross           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -41,13 +41,13 @@ def gradient(x, y, theta):
     #number of theta values must match number of features (n in xn)
     #get 1d vector of y_hat (predicted) values
     #check that y_hat (calculated from x) and y are compatible
-    #dot product of transpose of x with y_hat - y vector gives vector of gradients
+    #dot product of transpose of x with (y_hat - y) vector gives vector of gradients
 
     x = add_intercept(x)
     if theta.shape != (x.shape[1],):
         return None
     y_hat = np.dot(x, theta)
-    check, y, h = check_size_and_shape(y, y_hat)
+    check, y, y_hat = check_size_and_shape(y, y_hat)
     if not check:
         return None
     y_hat = y_hat - y
