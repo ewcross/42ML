@@ -4,4 +4,4 @@
 
 #Terameters: Distance that the spacecraft has travelled in terameters.
 
-#Sell_price: This is the prices at which the custommer bought the spacecraft (in kiloeuros).
+#Sell_price: This is the prices at which the customer bought the spacecraft (in kiloeuros).

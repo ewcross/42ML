@@ -6,11 +6,12 @@
 #    By: ecross <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/05/04 11:38:14 by ecross            #+#    #+#              #
-#    Updated: 2020/05/04 21:40:07 by ecross           ###   ########.fr        #
+#    Updated: 2020/05/05 19:00:17 by ecross           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 import numpy as np
+import matplotlib.pyplot as plt
 
 class MyLinearRegression:
 
@@ -50,12 +51,12 @@ class MyLinearRegression:
             self.thetas = self.thetas - (nabla * self.alpha)
         return self.thetas
 
-    def fit_and_plot_convergence(self, x, y):
+    def plot_convergence(self, x, y):
 
         """carries out linear regression given a set of data features, xn,
         training output values, y, and initial theta values (self.thetas),
         returning a vector containing new theta values - this version plots
-        the change in cost function with convergence cycles"""
+        the change in cost function with convergence cycles, and displays this"""
 
         if type(x) != np.ndarray or type(y) != np.ndarray:
             print("x, y and theta must be numpy ndarrays")
@@ -66,9 +67,9 @@ class MyLinearRegression:
             if nabla is None:
                 return None
             self.thetas = self.thetas - (nabla * self.alpha)
-            j_values.append(cost_(y, predict_(x, self.thetas)))
+            j_values.append(self.mse_(y, self.predict_(x)[1]))
         j = np.array(j_values)
-        epoc = np.array(np.arange(n_cycle))
+        epoc = np.array(np.arange(self.n_cycle))
         plt.plot(epoc, j, 'o')
         plt.show()
         return self.thetas
@@ -96,6 +97,8 @@ class MyLinearRegression:
         #dot product of transpose of x with (y_hat - y) vector gives vector of gradients
     
         x, y_hat = self.predict_(x)
+        if x is None or y_hat is None:
+            return None
         check, y, y_hat = self.check_size_and_shape(y, y_hat)
         if not check:
             return None
@@ -108,9 +111,11 @@ class MyLinearRegression:
         also returning the x vector with 1s column added"""
 
         x = self.add_intercept(x)
+        if self.thetas.ndim > 1:
+            self.thetas = self.thetas.reshape((self.thetas.size,))
         if self.thetas.shape != (x.shape[1],):
-            print("mismatch between theta values and input features")
-            return None
+            print("mismatch between theta vector size, and input features")
+            return None, None
         return x, np.dot(x, self.thetas)
 
     def add_intercept(self, x):
