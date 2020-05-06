@@ -6,7 +6,7 @@
 #    By: ecross <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/05/04 22:05:00 by ecross            #+#    #+#              #
-#    Updated: 2020/05/04 22:19:25 by ecross           ###   ########.fr        #
+#    Updated: 2020/05/06 12:43:31 by ecross           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -35,7 +35,7 @@ def minmax(x):
     if x.size == 0:
         return None
     if x.ndim > 1:
-        x.reshape(1, )
+        x.reshape(x.size, 1)
     r = np.amax(x) - np.amin(x)
     x = x - np.amin(x)
     return x / r
