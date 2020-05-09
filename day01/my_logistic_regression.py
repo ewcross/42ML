@@ -6,7 +6,7 @@
 #    By: ecross <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/05/09 12:12:13 by ecross            #+#    #+#              #
-#    Updated: 2020/05/09 13:22:09 by ecross           ###   ########.fr        #
+#    Updated: 2020/05/09 16:17:21 by ecross           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -48,6 +48,7 @@ class MyLogisticRegression:
         for i in range(self.n_cycle):
             nabla = self.gradient_(x, y)
             if nabla is None:
+                print('fit: error calculating gradient vector')
                 return None
             self.thetas = self.thetas - (nabla * self.alpha)
         return self.thetas
@@ -66,6 +67,7 @@ class MyLogisticRegression:
         for i in range(self.n_cycle):
             nabla = self.gradient_(x, y)
             if nabla is None:
+                print('error calculating gradient vector')
                 return None
             self.thetas = self.thetas - (nabla * self.alpha)
             j_values.append(self.cost_(y, self.predict_(x)))
@@ -100,13 +102,13 @@ class MyLogisticRegression:
         """generates vector of predicted (y_hat) values, given an input
         vector of x values and a vector of thetas"""
 
-        x = self.add_intercept(x)
+        new = self.add_intercept(x)
         if self.thetas.ndim > 1:
             self.thetas = self.thetas.reshape((self.thetas.size,))
-        if self.thetas.shape != (x.shape[1],):
+        if self.thetas.shape != (new.shape[1],):
             print("mismatch between theta vector size, and input features")
             return None
-        return self.sigmoid_(np.dot(x, self.thetas))
+        return self.sigmoid_(np.dot(new, self.thetas))
     
     def sigmoid_(self, vec):
 
@@ -161,6 +163,10 @@ if __name__ == "__main__":
 
     X = np.array([[1., 1., 2., 3.], [5., 8., 13., 21.], [3., 5., 9., 14.]])
     Y = np.array([[1], [0], [1]])
-    mlr = MyLogisticRegression(np.array([2, 0.5, 7.1, -4.3, 2.09]), alpha=0.01, n_cycle=1000)
+    mlr = MyLogisticRegression(np.array([2, 0.5, 7.1, -4.3, 2.09]), alpha=0.01, n_cycle=2200)
+    #print('y_hat :', Y_HAT)
+    #print('cost: ', mlr.cost_(Y, Y_HAT))
     mlr.plot_convergence(X, Y)
-    print(mlr.thetas)
+    #mlr.fit_(X, Y)
+    print('thetas: ', mlr.thetas)
+    print('new cost: ', mlr.cost_(Y, mlr.predict_(X)))
