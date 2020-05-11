@@ -1,25 +1,24 @@
 # **************************************************************************** #
 #                                                                              #
 #                                                         :::      ::::::::    #
-#    my_logistic_regression.py                          :+:      :+:    :+:    #
+#    my_linear_regression.py                            :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
 #    By: ecross <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2020/05/09 12:12:13 by ecross            #+#    #+#              #
-#    Updated: 2020/05/09 16:17:21 by ecross           ###   ########.fr        #
+#    Created: 2020/05/04 11:38:14 by ecross            #+#    #+#              #
+#    Updated: 2020/05/11 13:00:14 by ecross           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 import numpy as np
-from math import e as euler
-from math import log
 import matplotlib.pyplot as plt
 
-class MyLogisticRegression:
+class MyLinearRegression:
 
     def __init__(self, thetas, alpha=0.001, n_cycle=1000):
         if not self.check_init(thetas, alpha, n_cycle):
-            self.thetas = None
+            raise ValueError
+            return
         self.alpha = alpha
         self.n_cycle = n_cycle
         self.thetas = thetas
@@ -37,25 +36,24 @@ class MyLogisticRegression:
         return 1
 
     def fit_(self, x, y):
-        
-        """carries out logistic regression given a set of data features, xn,
+
+        """carries out linear regression given a set of data features, xn,
         training output values, y, and initial theta values (self.thetas),
-        returning a vector containing optimised theta values"""
+        returning a vector containing new theta values"""
 
         if type(x) != np.ndarray or type(y) != np.ndarray:
             print("x, y and theta must be numpy ndarrays")
             return None
         for i in range(self.n_cycle):
-            nabla = self.gradient_(x, y)
+            nabla = self.gradient(x, y)
             if nabla is None:
-                print('fit: error calculating gradient vector')
                 return None
             self.thetas = self.thetas - (nabla * self.alpha)
         return self.thetas
 
     def plot_convergence(self, x, y):
 
-        """carries out logistic regression given a set of data features, xn,
+        """carries out linear regression given a set of data features, xn,
         training output values, y, and initial theta values (self.thetas),
         returning a vector containing new theta values - this version plots
         the change in cost function with convergence cycles, and displays this"""
@@ -65,89 +63,17 @@ class MyLogisticRegression:
             return None
         j_values = []
         for i in range(self.n_cycle):
-            nabla = self.gradient_(x, y)
+            nabla = self.gradient(x, y)
             if nabla is None:
-                print('error calculating gradient vector')
                 return None
             self.thetas = self.thetas - (nabla * self.alpha)
-            j_values.append(self.cost_(y, self.predict_(x)))
+            j_values.append(self.mse_(y, self.predict_(x)[1]))
         j = np.array(j_values)
         epoc = np.array(np.arange(self.n_cycle))
         plt.plot(epoc, j, 'o')
         plt.show()
         return self.thetas
 
-    def gradient_(self, x, y):
-
-        """computes a 1d vector of the gradients of the cost function, the
-        partial derivitive with respect to each theta, for given theta values"""
-    
-        #add column of 1s to right side of x value vector
-        #number of theta values must match number of features (n in xn)
-        #get 1d vector of y_hat (predicted) values, using the sigmoid function
-        #check that y_hat (calculated from x) and y are compatible
-        #dot product of transpose of x with (y_hat - y) vector gives vector of gradients
-    
-        y_hat = self.predict_(x)
-        if y_hat is None:
-            return None
-        check, y, y_hat = self.check_size_and_shape(y, y_hat)
-        if not check:
-            return None
-        y_hat = y_hat - y
-        return np.dot(self.add_intercept(x).transpose(), y_hat) * (1 / y.size)
-
-    def predict_(self, x):
-
-        """generates vector of predicted (y_hat) values, given an input
-        vector of x values and a vector of thetas"""
-
-        new = self.add_intercept(x)
-        if self.thetas.ndim > 1:
-            self.thetas = self.thetas.reshape((self.thetas.size,))
-        if self.thetas.shape != (new.shape[1],):
-            print("mismatch between theta vector size, and input features")
-            return None
-        return self.sigmoid_(np.dot(new, self.thetas))
-    
-    def sigmoid_(self, vec):
-
-        """computes the sigmoid of a vector, returning a new vector of same shape"""
-    
-        if type(vec) != np.ndarray:
-            print('sigmoid function needs a numpy array')
-            return None
-        if vec.size == 0:
-            print('sigmoid function needs a non-empty numpy array')
-            return None
-        def sig(var):
-            return 1 / (1 + euler**(-var))
-        return np.vectorize(sig)(vec)
-    
-    def add_intercept(self, x):
-
-        """takes a non-empty numpy.ndarray and returns a 2D matrix
-        with a column of 1's concatenated to the right hand side
-        of the  original vector"""
-
-        if x.ndim == 1:
-            x = x[:, None]
-        return np.insert(x, 0, 1, axis=1)
-
-    def cost_(self, y, y_hat, eps=1e-15):
-
-        """calculates the cost of each predicted (y_hat) value in y_hat vector
-        using the logistic loss function, with the actual values in the vector y"""
-
-        check, y, y_hat = self.check_size_and_shape(y, y_hat)
-        if not check:
-            print('cost function (log loss): y and y(predicted) do not match')
-            return None
-        vec_log = np.vectorize(log)
-        ret = np.dot(y + eps, vec_log(y_hat + eps))
-        ret += np.dot((1 - y) + eps, vec_log((1 - y_hat) + eps))
-        return ret * (-1. / y.size)
-    
     def check_size_and_shape(self, y, y_hat):
         if y.size == 0 or y_hat.size == 0:
             return 0, None, None
@@ -159,14 +85,68 @@ class MyLogisticRegression:
             return 0, None, None
         return 1, y, y_hat
 
-if __name__ == "__main__":
+    def gradient(self, x, y):
 
-    X = np.array([[1., 1., 2., 3.], [5., 8., 13., 21.], [3., 5., 9., 14.]])
-    Y = np.array([[1], [0], [1]])
-    mlr = MyLogisticRegression(np.array([2, 0.5, 7.1, -4.3, 2.09]), alpha=0.01, n_cycle=2200)
-    #print('y_hat :', Y_HAT)
-    #print('cost: ', mlr.cost_(Y, Y_HAT))
-    mlr.plot_convergence(X, Y)
-    #mlr.fit_(X, Y)
-    print('thetas: ', mlr.thetas)
-    print('new cost: ', mlr.cost_(Y, mlr.predict_(X)))
+        """computes a 1d vector of the gradients of the cost function, the
+        partial derivitive with respect to each theta, for given theta values"""
+    
+        #add column of 1s to right side of x value vector
+        #number of theta values must match number of features (n in xn)
+        #get 1d vector of y_hat (predicted) values
+        #check that y_hat (calculated from x) and y are compatible
+        #dot product of transpose of x with (y_hat - y) vector gives vector of gradients
+    
+        x, y_hat = self.predict_(x)
+        if x is None or y_hat is None:
+            return None
+        check, y, y_hat = self.check_size_and_shape(y, y_hat)
+        if not check:
+            return None
+        y_hat = y_hat - y
+        return np.dot(x.transpose(), y_hat) * (1 / y.size)
+
+    def predict_(self, x):
+
+        """generates a vector of predicted y values given input data and thetas,
+        also returning the x vector with 1s column added"""
+
+        x = self.add_intercept(x)
+        if self.thetas.ndim > 1:
+            self.thetas = self.thetas.reshape((self.thetas.size,))
+        if self.thetas.shape != (x.shape[1],):
+            print("mismatch between theta vector size, and input features")
+            return None, None
+        return x, np.dot(x, self.thetas)
+
+    def add_intercept(self, x):
+
+        """takes a non-empty numpy.ndarray and returns a 2D matrix
+        with a column of 1's concatenated to the right hand side
+        of the  original vector"""
+
+        #return np.array([np.ones(x.size), x]).transpose()
+        if x.ndim == 1:
+            x = x[:, None]
+        return np.insert(x, 0, 1, axis=1)
+
+    def mse_elem_(y, y_hat):
+
+        """generates the value of the cost function for for each element of
+        a set of predicted and actual values, y_hat and y,
+        using mean squared error"""
+
+        check, y, y_hat = self.check_size_and_shape(y, y_hat)
+        if not check:
+            return None
+        return (y_hat - y) / y.size
+
+    def mse_(self, y, y_hat):
+
+        """generates the value of the cost function for a set of predicted
+        and actual values, y_hat and y, using mean squared error"""
+
+        check, y, y_hat = self.check_size_and_shape(y, y_hat)
+        if not check:
+            return None
+        y = y_hat - y
+        return np.dot(y, y) / y.size
