@@ -6,7 +6,7 @@
 #    By: ecross <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/05/09 15:24:46 by ecross            #+#    #+#              #
-#    Updated: 2020/05/11 15:34:07 by ecross           ###   ########.fr        #
+#    Updated: 2020/05/12 11:48:21 by ecross           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,23 +16,13 @@ import matplotlib.pyplot as plt
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
 import sys
 
+sys.path.insert(1, '/Users/elliotcross/Documents/42/python/bootcamp_ml/tools')
 from my_logistic_regression import MyLogisticRegression as MLogR
 from confusion_matrix import confusion_matrix_
 from data_splitter import data_splitter
 from other_metrics import accuracy_score_, precision_score_, recall_score_, f1_score_
-sys.path.insert(1, '/Users/elliotcross/Documents/42/python/bootcamp_ml/day01_02_linear_regression')
+from add_polynomial_features import add_polynomial_features
 from normalisation import minmax
-
-#X = np.array([[1., 1., 2., 3.], [5., 8., 13., 21.], [3., 5., 9., 14.]])
-#Y = np.array([[1], [0], [1]])
-#th = np.array([2, 0.5, 7.1, -4.3, 2.09])
-#th = np.array([1.04565272, 0.62555148, 0.38387466, 0.15622435, -0.45990099])
-#mlr = MLogR(np.array(th))
-#y_hat = mlr.predict_(X)
-#plt.plot(X[:, :1], Y, 'o')
-#plt.plot(X[:, :1], y_hat, 'o')
-#plt.plot(X[:, :1], th[0] + (th[1] * X[:, :1]) + (th[2] * X[:, 1:2]) + (th[3] * X[:, 2:3]) + (th[4] * X[:, 3:4]), 'ro')
-#plt.show()
 
 def select_label(y, label):
     new = [0 if i[0] != label else 1 for i in y]
@@ -42,8 +32,13 @@ planets = pd.read_csv("../subjects/day03/resources/solar_system_census_planets.c
 people = pd.read_csv("../subjects/day03/resources/solar_system_census.csv")
 origins = np.array(planets[["Origin"]]).reshape(-1,1)
 X = np.array(people[["height", "weight", "bone_density"]]).reshape(-1, 3)
+
+#normalise the data
 X = np.concatenate((minmax(X[:, :1]), minmax(X[:, 1:2]), minmax(X[:, 2:3])), axis=1)
+
+#split data into training and testing sets
 X_train, X_test, origins_train, origins_test = data_splitter(X, origins, 0.5)
+
 thetas = np.zeros(4)
 
 mlogr = MLogR(thetas, alpha=0.9, n_cycle=2000)

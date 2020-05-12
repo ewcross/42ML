@@ -6,7 +6,7 @@
 #    By: ecross <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/05/10 10:29:02 by ecross            #+#    #+#              #
-#    Updated: 2020/05/10 12:52:30 by ecross           ###   ########.fr        #
+#    Updated: 2020/05/12 11:37:26 by ecross           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -52,17 +52,26 @@ def accuracy_score_(y, y_hat):
     """computes the accuracy score of a set of predicted labels,
     given the correct labels"""
     tp, fp, tn, fn = collect(y, y_hat, y.reshape(-1, 1)[0, 0])
-    return (tp + tn) / y.shape[0]
+    try:
+        return (tp + tn) / y.shape[0]
+    except ZeroDivisionError:
+        return None
 
 def precision_score_(y, y_hat, pos_label=1):
     tp, fp, tn, fn = collect(y, y_hat, pos_label)
     if (tp + fp) == 0:
         return None
-    return tp / (tp + fp)
+    try:
+        return tp / (tp + fp)
+    except ZeroDivisionError:
+        return None
 
 def recall_score_(y, y_hat, pos_label=1):
     tp, fp, tn, fn = collect(y, y_hat, pos_label)
-    return tp / (tp + fn)
+    try:
+        return tp / (tp + fn)
+    except ZeroDivisionError:
+        return None
 
 def f1_score_(y, y_hat, pos_label=1):
     tp, fp, tn, fn = collect(y, y_hat, pos_label)
@@ -70,7 +79,10 @@ def f1_score_(y, y_hat, pos_label=1):
     if precision is None:
         return None
     recall = recall_score_(y, y_hat, pos_label)
-    return (2 * precision * recall) / (precision + recall)
+    try:
+        return (2 * precision * recall) / (precision + recall)
+    except ZeroDivisionError:
+        return None
 
 if __name__ == "__main__":
 

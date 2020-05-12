@@ -6,15 +6,17 @@
 #    By: ecross <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/05/06 11:41:29 by ecross            #+#    #+#              #
-#    Updated: 2020/05/06 12:44:19 by ecross           ###   ########.fr        #
+#    Updated: 2020/05/12 11:49:56 by ecross           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import sys
 
 from my_linear_regression import MyLinearRegression as MLR
+sys.path.insert(1, '/Users/elliotcross/Documents/42/python/bootcamp_ml/tools')
 from polynomial_model import add_polynomial_features
 from normalisation import minmax
 

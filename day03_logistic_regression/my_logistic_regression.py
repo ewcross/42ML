@@ -6,7 +6,7 @@
 #    By: ecross <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/05/09 12:12:13 by ecross            #+#    #+#              #
-#    Updated: 2020/05/11 16:22:11 by ecross           ###   ########.fr        #
+#    Updated: 2020/05/12 11:25:46 by ecross           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,7 +18,7 @@ import sys
 
 class MyLogisticRegression:
 
-    def __init__(self, thetas, alpha=0.001, n_cycle=1000, penalty='l2'):
+    def __init__(self, thetas, alpha=0.001, n_cycle=1000, penalty='l2', lambda_=0.5):
         if not self.check_init(thetas, alpha, n_cycle):
             self.thetas = None
         self.alpha = alpha
@@ -27,6 +27,10 @@ class MyLogisticRegression:
         if penalty == 'l2':
             self.gradient_ = self.gradient_l2_
             self.cost_ = self.cost_l2_
+            if type(lambda_) != float:
+                print('lambda must be float')
+                raise ValueError
+            self.lambda_ = lambda_
         elif penalty != None:
             print('invalid penalty paramter')
             raise ValueError
@@ -104,10 +108,7 @@ class MyLogisticRegression:
         y_hat = y_hat - y
         return np.dot(self.add_intercept(x).transpose(), y_hat) * (1 / y.size)
         
-    def gradient_l2_(self, x, y, lambda_=0.5):
-        if type(lambda_) != float:
-            print('lambda must be float')
-            return None
+    def gradient_l2_(self, x, y):
         y_hat = self.predict_(x)
         if y_hat is None:
             return None
@@ -119,7 +120,7 @@ class MyLogisticRegression:
         th = np.array(self.thetas)
         th = th.reshape(-1,)
         th[0] = 0
-        lambda_theta = th * lambda_
+        lambda_theta = th * self.lambda_
         return y_hat + (lambda_theta / y.shape[0])
 
     def predict_(self, x):
@@ -188,7 +189,7 @@ class MyLogisticRegression:
         theta = np.array(self.thetas)
         theta = theta.reshape(-1,)
         theta[0] = 0
-        return (cost + ((lambda_ / y.shape[0]) * np.dot(theta, theta)))
+        return (ret + ((lambda_ / y.shape[0]) * np.dot(theta, theta)))
     
     def check_size_and_shape(self, y, y_hat):
         if y.size == 0 or y_hat.size == 0:

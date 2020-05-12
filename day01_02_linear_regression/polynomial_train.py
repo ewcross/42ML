@@ -6,15 +6,17 @@
 #    By: ecross <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/05/05 18:33:34 by ecross            #+#    #+#              #
-#    Updated: 2020/05/06 11:40:11 by ecross           ###   ########.fr        #
+#    Updated: 2020/05/12 11:50:40 by ecross           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import sys
 
 from my_linear_regression import MyLinearRegression as MLR
+sys.path.insert(1, '/Users/elliotcross/Documents/42/python/bootcamp_ml/tools')
 from polynomial_model import add_polynomial_features
 
 data = pd.read_csv("../subjects/day01/resources/are_blue_pills_magics.csv")
